@@ -16,4 +16,4 @@ const ClientSchema = new moongoose.Schema({
 
 // exporting the model
 //  model() gets the arguments 'Client' as name of the model and the schema
-module.exports = moongoose.model("Client", ClientSchema);
+module.exports = moongoose.model("Clients", ClientSchema);

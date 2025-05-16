@@ -21,4 +21,4 @@ const ProjectSchema = new moongoose.Schema({
 
 // exporting the model
 //  model() gets the arguments 'Project' as name of the model and the schema
-module.exports = moongoose.model("Project", ProjectSchema);
+module.exports = moongoose.model("Projects", ProjectSchema);

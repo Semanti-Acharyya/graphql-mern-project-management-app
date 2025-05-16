@@ -1,5 +1,6 @@
-// destrcuture the sampleData.js file to get the projects and clients arrays
-const { projects, clients } = require("../sampleData.js");
+// Import mogoose models
+const Project = require("../models/Projects");
+const Client = require("../models/Clients");
 
 // when we have diff resources (projects & clients in this case),
 // we create a type for all of those
@@ -9,6 +10,7 @@ const {
   GraphQLString,
   GraphQLSchema,
   GraphQLList,
+  GraphQLNonNull,
 } = require("graphql");
 
 // Project Type
@@ -23,8 +25,9 @@ const ProjectType = new GraphQLObjectType({
     client: {
       type: ClientType,
       resolve(parent, args) {
-        // finfing the client for the project using parent.clientId
-        return clients.find((client) => client.id === parent.clientId);
+        // finding the client for the project using parent.clientId
+        // as client id is a child of the parent (project)
+        return Client.findById(parent.clientId);
       },
     },
   }),
@@ -50,8 +53,7 @@ const RootQuery = new GraphQLObjectType({
     projects: {
       type: new GraphQLList(ProjectType),
       resolve(parent, args) {
-        // this is a function that returns the projects
-        return projects; // return the projects array directly
+        return Project.find();
       },
     },
 
@@ -65,16 +67,15 @@ const RootQuery = new GraphQLObjectType({
       // parent is the parent object
       // args is the arguments passed to the query
       resolve(parent, args) {
-        // we need to find the client with the id passed in
-        // we can use the find method to find the client
-        return projects.find((project) => project.id === args.id);
+        // return projects by id
+        return Project.findById(args.id);
       },
     },
 
     clients: {
       type: new GraphQLList(ClientType),
       resolve(parent, args) {
-        return clients; // return the clients array directly
+        return Client.find();
       },
     },
 
@@ -83,9 +84,49 @@ const RootQuery = new GraphQLObjectType({
       // we need to pass an id to get a client
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        // we need to find the project with the id passed in
-        // we can use the find method to find the project
-        return clients.find((client) => client.id === args.id);
+        // return clients by id
+        return Client.findById(args.id);
+      },
+    },
+  },
+});
+
+// Mutations
+
+const Mutation = new GraphQLObjectType({
+  name: "Mutation",
+  fields: {
+    // Add Client
+    addClient: {
+      type: ClientType,
+      args: {
+        // GraphQLNonNull esnure that the field is not null when submitted, i.e., required field
+        name: { type: GraphQLNonNull(GraphQLString) },
+        email: { type: GraphQLNonNull(GraphQLString) },
+        phone: { type: GraphQLNonNull(GraphQLString) },
+      },
+      resolve(parent, args) {
+        // creating a new client using the Client mongoose model
+        const client = new Client({
+          //  passing the key values
+          name: args.name,
+          email: args.email,
+          phone: args.phone,
+        });
+
+        // saving the client to the database
+        return Client.save();
+      },
+    },
+    // Delete Client
+    deleteClient: {
+      type: ClientType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+      },
+      resolve(parent, args) {
+        // deleting the client from the Client mongoose model
+        return Client.findByIdAndDelete(args.id);
       },
     },
   },
@@ -93,4 +134,5 @@ const RootQuery = new GraphQLObjectType({
 
 module.exports = new GraphQLSchema({
   query: RootQuery,
+  mutation: Mutation,
 });
