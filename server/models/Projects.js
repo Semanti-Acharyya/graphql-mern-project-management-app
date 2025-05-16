@@ -11,7 +11,7 @@ const ProjectSchema = new moongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["not started", "in progress", "completed"],
+    enum: ["Not Started", "In Progress", "Completed"],
   },
   clientId: {
     type: moongoose.Schema.Types.ObjectId,
