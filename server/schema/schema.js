@@ -175,6 +175,42 @@ const Mutation = new GraphQLObjectType({
         return Project.findByIdAndDelete(args.id);
       },
     },
+
+    // Update Project
+    updateProject: {
+      type: ProjectType,
+      args: {
+        id: { type: GraphQLNonNull(GraphQLID) },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString },
+        status: {
+          type: new GraphQLEnumType({
+            name: "ProjectStatusUpdate",
+            values: {
+              new: { value: "Not Started" },
+              progress: { value: "In Progress" },
+              completed: { value: "Completed" },
+            },
+          }),
+        },
+      },
+      resolve(parent, args) {
+        // updating the project from the Project mongoose model
+        return Project.findByIdAndUpdate(
+          args.id,
+          {
+            // setting the values to be updated using the $set operator
+            $set: {
+              name: args.name,
+              description: args.description,
+              status: args.status,
+            },
+          },
+          // if the values are not passed, it will be set as a new project using kw 'new'
+          { new: true }
+        );
+      },
+    },
   },
 });
 
