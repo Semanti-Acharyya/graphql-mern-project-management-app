@@ -17,7 +17,22 @@ const ClientRow = ({ client }) => {
     // this is useful to update the UI after the mutation
     // in this case, we want to refetch the GET_CLIENTS query
     // to get the updated list of clients after deleting a client
-    refetchQueries: [{ query: GET_CLIENTS }],
+    // refetchQueries: [{ query: GET_CLIENTS }],
+
+    // now using update function to update the cache
+    update(cache, { data: { deleteClient } }) {
+      // get the existing clients from the cache
+      const { clients } = cache.readQuery({ query: GET_CLIENTS });
+      // filter out the deleted client from the existing clients
+      cache.writeQuery({
+        query: GET_CLIENTS,
+        data: {
+          // loop through the existing clients to check if its id is equal to the deleted client id
+          // if its not equal then filter those clients
+          clients: clients.filter((client) => client.id !== deleteClient.id),
+        },
+      });
+    },
   });
 
   return (
