@@ -116,7 +116,7 @@ const Mutation = new GraphQLObjectType({
         });
 
         // saving the client to the database
-        return Client.save();
+        return client.save();
       },
     },
     // Delete Client
