@@ -1,9 +1,10 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 // using InMemoryCache so that the added data shows up right
 // away on the UI and we don't have to refresh the page
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
-import Clients from "./components/Clients";
-import AddClientsModal from "./components/AddClientsModal";
+import Home from "./pages/Home";
+import NotFound from "./pages/NotFound";
 
 const client = new ApolloClient({
   uri: "http://localhost:5001/graphql",
@@ -14,11 +15,15 @@ function App() {
   return (
     <>
       <ApolloProvider client={client}>
-        <Header />
-        <div className="container">
-          <AddClientsModal />
-          <Clients />
-        </div>
+        <Router>
+          <Header />
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+        </Router>
       </ApolloProvider>
     </>
   );
