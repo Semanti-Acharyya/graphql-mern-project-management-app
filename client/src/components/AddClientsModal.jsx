@@ -75,7 +75,7 @@ const AddClientsModal = () => {
                     type="text"
                     className="form-control"
                     id="name"
-                    valu={name}
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
@@ -85,7 +85,7 @@ const AddClientsModal = () => {
                     type="email"
                     className="form-control"
                     id="email"
-                    valu={email}
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
@@ -95,7 +95,7 @@ const AddClientsModal = () => {
                     type="text"
                     className="form-control"
                     id="Phone"
-                    valu={phone}
+                    value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
